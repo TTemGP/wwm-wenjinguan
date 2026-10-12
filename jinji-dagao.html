@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>진급대고 족보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@500&display=swap">
+<style>
+/* Layout: 서첩 같은 단일 칼럼 — 상단 낙관(印) 헤더, 요약 줄, 필터, 문항 행 목록 */
+:root{
+  --bg:#edf1ee; --surface:#f8faf8; --ink:#1c2827; --muted:#5b6966; --line:#d2dbd7;
+  --seal:#b03a2e; --jade:#2f7464; --jade-soft:#dcebe5; --warn:#a8650c; --warn-soft:#f6e9d2; --miss-soft:#f4dcd8;
+  --f-display:"Nanum Myeongjo","Noto Serif KR",serif;
+  --f-body:"Noto Sans KR",system-ui,sans-serif;
+  --f-han:"Noto Serif SC","Noto Serif CJK SC",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
+header{display:flex;gap:20px;align-items:flex-start}
+.seal{flex:none;width:58px;height:58px;border:2.5px solid var(--seal);color:var(--seal);border-radius:6px;
+  display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-size:20px;line-height:1;padding:6px;transform:rotate(-4deg)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,5vw,36px);margin:0;line-height:1.2;text-wrap:balance}
+.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
+.stat{display:flex;align-items:baseline;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px}
+.stat b{font-variant-numeric:tabular-nums;font-size:15px}
+.note{font-size:13px;color:var(--muted);margin:0 0 20px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2}
+#q{flex:1 1 220px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+#q:focus,.chip:focus-visible{outline:2px solid var(--jade);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);padding:5px 11px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:44px minmax(0,1.25fr) minmax(0,1fr) 64px;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);align-items:start}
+.no{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.3}
+.cat{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--jade);font-weight:700;margin-bottom:2px}
+.qt{margin:0}
+.ans{display:flex;gap:10px;align-items:flex-start}
+.letter{flex:none;width:28px;height:28px;border-radius:6px;background:var(--seal);color:var(--surface);display:grid;place-items:center;font-weight:700;font-size:14px}
+.letter.unk{background:var(--line);color:var(--muted)}
+.at{font-weight:700;margin:0;line-height:1.45}
+.han{font-family:var(--f-han);color:var(--muted);font-size:14px;margin:2px 0 0}
+.memo{font-size:13px;color:var(--muted);margin:6px 0 0}
+.memo.warn{color:var(--warn)}
+.st{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;text-align:center;white-space:nowrap;justify-self:end}
+.st.ok{background:var(--jade-soft);color:var(--jade)}
+.st.warn{background:var(--warn-soft);color:var(--warn)}
+.st.ref{background:var(--line);color:var(--muted)}
+.row.flag{background:linear-gradient(90deg,var(--warn-soft),transparent 60%)}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin:8px 0 0;padding:8px 10px;border:1px dashed var(--line);border-radius:6px;font-size:13px}
+.four span{font-family:var(--f-han)}
+.empty{padding:32px;text-align:center;color:var(--muted)}
+footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:65ch}
+@media (max-width:640px){
+  .row{grid-template-columns:36px minmax(0,1fr);gap:8px 12px}
+  .row .ans{grid-column:2}
+  .row .st{grid-column:2;justify-self:start;grid-row:1;}
+  .row .qcol{grid-column:2}
+  .row .no{grid-row:1 / span 3}
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="seal" aria-hidden="true"><span>晉</span><span>升</span><span>大</span><span>考</span></div>
+    <div>
+      <h1>진급대고 족보</h1>
+      <p class="sub">연운(燕云十六声) 중국 본서버 문진관 시험 다음 단계인 진급대고(晋升大考) 55문항. 공략 정답을 원전과 대조해 한 문항씩 다시 확인했습니다.</p>
+    </div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+  <p class="note">대고는 문제은행에서 20문항이 무작위로 나오고 60점 이상이면 합격이에요. 점독적(点读籍) 2개로 오답을 지울 수 있어요. 글로벌 서버는 보기 순서와 번역이 달라질 수 있어요. <b>정답 내용과 중문</b>으로 맞춰 고르는 게 안전합니다.</p>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="문제·정답 검색 (예: 이백, 九歌, 육서)" aria-label="검색">
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer><a href="./" style="color:var(--jade)">← 목차로</a><br>출처 공략: 蓝光手游网 〈燕云十六声文津馆晋升大考答题答案〉. 17173 〈真传文闱答题满分攻略〉의 燕帆攻略组 이미지(39문항)와 2차 대조했어요. 시험 형식은 17173 공략 기준입니다. 시구의 작자·출전과 경학·역사 문항은 원전 내용을 알고 있는 범위에서 대조했습니다.<br><br>이 시험은 출처 공략에 보기 기호(A~D)가 적혀 있지 않아 정답 내용만 실었어요. 게임에서는 정답 내용을 보고 고르세요.</footer>
+</div>
+
+<script>
+const D=[
+[1, "시문", "《구가·국상》의 '国殇'은 무엇을 뜻하나?", "", "나라를 위해 목숨 바친 장수와 병사", "为国牺牲之将士", "ok", "굴원 《초사·구가》 중 전사자를 기리는 제가(祭歌)."],
+[2, "시문", "굴원의 '향초미인' 상징에서 향초가 아닌 것은?", "", "쑥 무리 (소애)", "萧艾", "ok", "《이소》에서 萧艾는 소인배를 빗댄 악초."],
+[3, "시문", "원앙 구절이 나오는 《장안고의》의 작자는?", "", "노조린", "卢照邻", "ok", "'得成比目何辞死，愿作鸳鸯不羡仙'"],
+[4, "역사", "군사 문서·서신을 나르던 당나라 역참 제도를 관장한 관청은?", "", "상서성", "尚书省", "ok", "상서성 병부 소속 가부(驾部)가 역참을 담당."],
+[5, "시문", "두목 《박진회》의 '후정화'가 가리키는 것은?", "", "옥수후정화", "玉树后庭花", "ok", "진 후주가 지은 망국의 노래."],
+[6, "상식", "목판 인쇄본 장정 방식 중 가장 늦게 나온 것은?", "", "호접장", "蝴蝶装", "warn", "목판본 장정은 호접장(송) → 포배장(원) → 선장(명) 순서로 나왔어요. 보기에 包背装이나 线装이 있다면 한 번 비교해 보고 골라 보세요."],
+[7, "시문", "'두 구절을 3년 만에 얻었다(二句三年得)'를 지은 고음(苦吟) 시인은?", "", "가도", "贾岛", "ok", "'二句三年得，一吟双泪流'"],
+[8, "상식", "'살청(杀青)'의 본래 뜻은?", "", "죽간을 불에 쬐어 푸른 껍질을 벗겨 좀을 막는 공정", "火炙竹简，去其青皮以防蠹", "ok", "보기에 따라 '简制作工序'로 나오기도 해요."],
+[9, "강호", "생선 뱃속에 비수 '어장검'을 숨긴 자객은?", "", "전제", "专诸", "ok", "오왕 료를 암살."],
+[10, "상식", "명검 '담로(湛卢)'를 처음 기록한 문헌은?", "", "원강 《월절서》", "袁康《越绝书》", "ok", ""],
+[11, "경학", "'군주는 배, 백성은 물'이라고 말한 사람은?", "", "순자", "荀子", "ok", "《순자·왕제》 '水则载舟，水则覆舟'. 위징 인용은 후대."],
+[12, "경학", "《상서》에 따르면 천하를 처음 9주로 나눈 사람은?", "", "우임금", "大禹", "ok", "《상서·우공》"],
+[13, "상식", "《진서·왕희지전》에서 왕희지가 좋아한 것은?", "", "거위", "吊睛白额大鹅", "ok", "거위가 들어간 보기를 고르면 됩니다."],
+[14, "경학", "공자의 '사교(四教)'는?", "", "문·행·충·신", "文行忠信", "ok", "《논어·술이》 '子以四教'"],
+[15, "경학", "《시경》에서 노래할 수 있는(가사가 있는) 시는 몇 편?", "", "305편", "三百又五篇", "ok", "총 311편 중 생시(笙诗) 6편은 제목만 전함."],
+[16, "경학", "《논어·계씨》 '소장(萧墙)'의 본래 뜻은?", "", "문 앞 가림벽", "门屏", "ok", ""],
+[17, "경학", "《예기·학기》 '杂施而不孙' 구절의 교훈은?", "", "가르침은 순서를 따라야 한다", "教必循序", "ok", ""],
+[18, "상식", "'규구(规矩)'의 본래 뜻은?", "", "원·네모를 그리는 도구", "作图工具", "ok", "규 = 컴퍼스, 구 = 곱자."],
+[19, "상식", "폐허에서 출처 불명의 고서를 찾았다. 가장 부적절한 행동은?", "", "불에 태워 버린다", "烈火焚之", "ok", "상식 문항."],
+[20, "상식", "내용이 민망한 당나라 문집을 구했다. 가장 부적절한 행동은?", "", "불에 태워 버린다", "烈火焚之", "ok", ""],
+[21, "경학", "맹자의 '삼락(三乐)'이 아닌 것은?", "", "허리에 만 관을 두름 (큰 부자)", "腰缠万贯", "ok", "삼락: 부모형제 무탈, 하늘·사람에 부끄럽지 않음, 영재 교육."],
+[22, "역사", "진나라 통일 직후 처음 둔 군(郡)의 수는?", "", "36군", "三十六郡", "ok", ""],
+[23, "경학", "《풍속통의》 해·달·강물 구절이 주는 교훈은?", "", "근본을 지키면 회복할 수 있다", "守本可复", "ref", ""],
+[24, "상식", "'입목삼분(入木三分)'의 본래 뜻은?", "", "서예의 필력이 굳셈", "书法之道劲", "ok", "왕희지 고사."],
+[25, "시문", "'杨柳依依'가 나오는 《시경》 편은?", "", "채미", "采薇", "ok", "《소아·채미》"],
+[26, "문자", "《설문》 육서에서 '书'의 분류는?", "", "형성", "形声", "ok", "'从聿者声'"],
+[27, "문자", "《설문》 육서에서 '文'의 분류는?", "", "상형", "象形", "ok", "'错画也，象交文'"],
+[28, "문자", "《설문》 육서에서 '人'의 분류는?", "", "상형", "象形", "ok", ""],
+[29, "역사", "《사기》 '세가(世家)'가 기록하는 대상은?", "", "제후와 제후왕", "诸侯及诸侯王", "ok", ""],
+[30, "시문", "《세설신어·상예》의 '풍류(风流)'의 뜻은?", "", "풍채가 빼어나고 운치 있음", "风姿隽永", "ok", ""],
+[31, "경학", "《상서(尚书)》의 '尚'의 뜻은?", "", "상고(上古)", "上古", "ok", "'상고 시대의 글'이라는 뜻."],
+[32, "상식", "'간(干)'과 '과(戈)' 중 방어용 도구는?", "", "간 (방패)", "干", "ok", ""],
+[33, "시문", "'십 년 동안 칼 한 자루를 갈았다' 시의 작자는?", "", "가도", "贾岛", "ok", "《검객》 '十年磨一剑'. 7번과 같은 시인."],
+[34, "시문", "변방의 고생과 '협골향(侠骨香)'을 노래한 구절의 작자는?", "", "왕유", "王维", "ok", "《소년행》 '纵死犹闻侠骨香'"],
+[35, "시문", "'男儿何不带吴钩'로 시작하는 시의 작자는?", "", "이하", "李贺", "ok", "《남원》"],
+[36, "시문", "'一剑霜寒十四州'가 나오는 시의 작자는?", "", "관휴", "贯休", "ok", "승려 시인."],
+[37, "시문", "'十步杀一人'이 나오는 시의 작자는?", "", "이백", "李白", "ok", "《협객행》"],
+[38, "시문", "'落花时节又逢君'의 '君'은 누구?", "", "이구년", "李龟年", "ok", "두보 《강남봉이구년》"],
+[39, "시문", "《치마(驰马)》 구절에 담긴 감정은?", "", "백락의 인정을 바라는 마음", "对伯乐赏识的期盼", "ref", ""],
+[40, "역사", "《당률소의》 '십악(十恶)'에 들지 않는 죄는?", "", "닭 도둑질", "偷鸡", "ok", ""],
+[41, "역사", "《상체》에서 이름을 딴 화악상휘루(花萼相辉楼)를 지은 목적은?", "", "형제간의 우애", "手足之谊", "ok", "당 현종이 형제들을 위해 흥경궁에 세운 누각."],
+[42, "역사", "'무성왕(武成王)'은 누구?", "", "강자아 (강태공)", "姜子牙", "ok", "당 현종 때 무묘에 모심."],
+[43, "시문", "당나라 사람이 엮지 않은 시문집은?", "", "《옥대신영》", "《玉台新咏》", "ok", "남조 진나라 서릉 편찬."],
+[44, "상식", "당나라 때 가장 유행한 배 먹는 방법은?", "", "배를 쪄 먹기", "蒸梨", "ok", ""],
+[45, "시문", "이백 시 '随君直到夜郎西'의 '君'은 누구?", "", "왕창령", "王昌龄", "ok", "《문왕창령좌천용표요유차기》"],
+[46, "역사", "《삼국지》에서 '勿以恶小而为之'라고 말한 사람은?", "", "유비", "刘备", "ok", "유선에게 남긴 유조."],
+[47, "시문", "《구가》는 모두 몇 편인가?", "", "11편", "11 篇", "ok", "이름은 '아홉'이지만 실제로는 11편."],
+[48, "경학", "《좌전》 '郑所赖' 구절의 '赖'의 뜻은?", "", "의지하다", "依赖，依靠", "ok", ""],
+[49, "시문", "소통의 《문선》에 없는 문체는?", "", "사(词)", "词", "ok", "사는 당 이후에 성행."],
+[50, "시문", "'함영저화(含英咀华)'의 출전은?", "", "한유 《진학해》", "韩愈《进学解》", "ok", ""],
+[51, "경학", "《주례》 육관(六官)에 들지 않는 것은?", "", "천관황제", "天官皇帝", "ok", "육관: 천·지·춘·하·추·동관."],
+[52, "상식", "《주례》 예법에 가장 맞지 않는 행동은?", "", "두 손을 주머니에 넣고 고수인 척", "双手插兜，做高手风", "ok", ""],
+[53, "경학", "《좌전·애공 27년》의 '삼부지(三不知)'의 뜻은?", "", "일의 시작·전개·끝을 모름", "不知其事之始，不知其进，不知其终", "ok", ""],
+[54, "시문", "조식이 짓지 않은 구절은?", "", "对酒当歌，人生几何", "对酒当歌，人生几何", "ok", "조조 《단가행》. 조식이 아니라 아버지 조조의 시."],
+[55, "시문", "두보의 '笔落惊风雨，诗成泣鬼神'은 누구를 평한 구절인가?", "", "이백", "李白", "ok", "두보 《기이십이백이십운》. 출처: 17173(燕帆攻略组)"]
+];
+const ST={ok:"확인",warn:"주의",ref:"참고"};
+const cats=["전체",...new Set(D.map(d=>d[1]))];
+let cur="전체";
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function stats(){
+  const c={ok:0,warn:0,ref:0};D.forEach(d=>c[d[6]]++);
+  $("#stats").innerHTML=`<span class="stat"><b>${D.length}</b>문항</span><span class="stat" style="color:var(--jade)"><b>${c.ok}</b>정답 확인</span><span class="stat" style="color:var(--warn)"><b>${c.warn}</b>표기 주의</span><span class="stat" style="color:var(--muted)"><b>${c.ref}</b>원전 미확인</span>`;
+}
+function chips(){
+  $("#chips").innerHTML=cats.map(c=>`<button class="chip" type="button" aria-pressed="${c===cur}" data-c="${c}">${c}</button>`).join("");
+}
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  const rows=D.filter(d=>(cur==="전체"||d[1]===cur)&&(!q||d.slice(1,8).join(" ").toLowerCase().includes(q)));
+  $("#list").innerHTML=rows.length?rows.map(d=>`
+  <div class="row${d[6]==="warn"?" flag":""}">
+    <div class="no">${String(d[0]).padStart(2,"0")}</div>
+    <div class="qcol"><span class="cat">${d[1]}</span><p class="qt">${esc(d[2])}</p></div>
+    <div class="ans">${d[3]?`<span class="letter${d[3]==="?"?" unk":""}">${d[3]}</span>`:""}
+      <div style="min-width:0"><p class="at">${esc(d[4])}</p><p class="han">${d[5]}</p>
+      ${d[7]?`<p class="memo${d[6]==="warn"?" warn":""}">${d[7]}</p>`:""}
+      ${d[8]?`<div class="four">${d[8].map(x=>`<span>${x}</span>`).join("")}</div>`:""}</div></div>
+    <span class="st ${d[6]}">${ST[d[6]]}</span>
+  </div>`).join(""):`<div class="empty">맞는 문항이 없어요. 검색어를 바꿔 보세요.</div>`;
+}
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;cur=b.dataset.c;chips();render();});
+$("#q").addEventListener("input",render);
+stats();chips();render();
+</script>
+
+</body>
+</html>

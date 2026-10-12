@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>연운 문진관 족보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@500&display=swap">
+<style>
+/* Layout: 서첩 같은 단일 칼럼 — 상단 낙관(印) 헤더, 요약 줄, 필터, 문항 행 목록 */
+:root{
+  --bg:#edf1ee; --surface:#f8faf8; --ink:#1c2827; --muted:#5b6966; --line:#d2dbd7;
+  --seal:#b03a2e; --jade:#2f7464; --jade-soft:#dcebe5; --warn:#a8650c; --warn-soft:#f6e9d2; --miss-soft:#f4dcd8;
+  --f-display:"Nanum Myeongjo","Noto Serif KR",serif;
+  --f-body:"Noto Sans KR",system-ui,sans-serif;
+  --f-han:"Noto Serif SC","Noto Serif CJK SC",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
+header{display:flex;gap:20px;align-items:flex-start}
+.seal{flex:none;width:58px;height:58px;border:2.5px solid var(--seal);color:var(--seal);border-radius:6px;
+  display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-size:20px;line-height:1;padding:6px;transform:rotate(-4deg)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,5vw,36px);margin:0;line-height:1.2;text-wrap:balance}
+.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
+.stat{display:flex;align-items:baseline;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px}
+.stat b{font-variant-numeric:tabular-nums;font-size:15px}
+.note{font-size:13px;color:var(--muted);margin:0 0 20px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2}
+#q{flex:1 1 220px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+#q:focus,.chip:focus-visible{outline:2px solid var(--jade);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);padding:5px 11px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:44px minmax(0,1.25fr) minmax(0,1fr) 64px;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);align-items:start}
+.no{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.3}
+.cat{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--jade);font-weight:700;margin-bottom:2px}
+.qt{margin:0}
+.ans{display:flex;gap:10px;align-items:flex-start}
+.letter{flex:none;width:28px;height:28px;border-radius:6px;background:var(--seal);color:var(--surface);display:grid;place-items:center;font-weight:700;font-size:14px}
+.letter.unk{background:var(--line);color:var(--muted)}
+.at{font-weight:700;margin:0;line-height:1.45}
+.han{font-family:var(--f-han);color:var(--muted);font-size:14px;margin:2px 0 0}
+.memo{font-size:13px;color:var(--muted);margin:6px 0 0}
+.memo.warn{color:var(--warn)}
+.st{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;text-align:center;white-space:nowrap;justify-self:end}
+.st.ok{background:var(--jade-soft);color:var(--jade)}
+.st.warn{background:var(--warn-soft);color:var(--warn)}
+.st.miss{background:var(--miss-soft);color:var(--seal)}
+.st.ext{background:var(--line);color:var(--ink)}
+.row.flag{background:linear-gradient(90deg,var(--warn-soft),transparent 60%)}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin:8px 0 0;padding:8px 10px;border:1px dashed var(--line);border-radius:6px;font-size:13px}
+.four span{font-family:var(--f-han)}
+.empty{padding:32px;text-align:center;color:var(--muted)}
+footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:65ch}
+@media (max-width:640px){
+  .row{grid-template-columns:36px minmax(0,1fr);gap:8px 12px}
+  .row .ans{grid-column:2}
+  .row .st{grid-column:2;justify-self:start;grid-row:1;}
+  .row .qcol{grid-column:2}
+  .row .no{grid-row:1 / span 3}
+}
+</style>
+<style>
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:28px}
+.card{display:block;padding:20px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-decoration:none}
+.card:hover,.card:focus-visible{border-color:var(--jade);outline:none}
+.card h2{font-family:var(--f-display);font-size:22px;margin:0 0 4px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.card .han{margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="seal" aria-hidden="true"><span>問</span><span>津</span><span>族</span><span>譜</span></div>
+    <div>
+      <h1>연운 문진관 족보</h1>
+      <p class="sub">연운(Where Winds Meet) 중국 본서버 문진관(文津馆) 시험 정답을 한국어로 정리하고 교차검증한 족보입니다. 글로벌 서버는 보기 순서와 번역이 다를 수 있으니 정답 내용과 중문으로 맞춰 고르세요.</p>
+    </div>
+  </header>
+  <div class="cards">
+    <a class="card" href="wenjinguan.html"><p class="han">文津馆 入门笔试</p><h2>문진관 입문 시험</h2><p>입문 시험 기본 26문항과 다른 공략의 추가 27문항</p></a>
+    <a class="card" href="jinji-dagao.html"><p class="han">文津馆 晋升大考</p><h2>진급대고</h2><p>문진관 시험 다음 단계, 55문항</p></a>
+  </div>
+  <footer>정답 출처는 각 페이지 하단에 적어 두었어요. 틀린 답을 발견하면 알려 주세요.</footer>
+</div>
+</body>
+</html>

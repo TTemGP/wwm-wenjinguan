@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>문진관 입문 시험 족보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@500&display=swap">
+<style>
+/* Layout: 서첩 같은 단일 칼럼 — 상단 낙관(印) 헤더, 요약 줄, 필터, 문항 행 목록 */
+:root{
+  --bg:#edf1ee; --surface:#f8faf8; --ink:#1c2827; --muted:#5b6966; --line:#d2dbd7;
+  --seal:#b03a2e; --jade:#2f7464; --jade-soft:#dcebe5; --warn:#a8650c; --warn-soft:#f6e9d2; --miss-soft:#f4dcd8;
+  --f-display:"Nanum Myeongjo","Noto Serif KR",serif;
+  --f-body:"Noto Sans KR",system-ui,sans-serif;
+  --f-han:"Noto Serif SC","Noto Serif CJK SC",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111716; --surface:#19211f; --ink:#e3eae7; --muted:#93a29e; --line:#2b3633;
+  --seal:#e06a5c; --jade:#71b9a6; --jade-soft:#1e3330; --warn:#e3a04a; --warn-soft:#352a17; --miss-soft:#3a2220; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px}
+header{display:flex;gap:20px;align-items:flex-start}
+.seal{flex:none;width:58px;height:58px;border:2.5px solid var(--seal);color:var(--seal);border-radius:6px;
+  display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-size:20px;line-height:1;padding:6px;transform:rotate(-4deg)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,5vw,36px);margin:0;line-height:1.2;text-wrap:balance}
+.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
+.stat{display:flex;align-items:baseline;gap:6px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px}
+.stat b{font-variant-numeric:tabular-nums;font-size:15px}
+.note{font-size:13px;color:var(--muted);margin:0 0 20px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2}
+#q{flex:1 1 220px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+#q:focus,.chip:focus-visible{outline:2px solid var(--jade);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);padding:5px 11px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:44px minmax(0,1.25fr) minmax(0,1fr) 64px;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);align-items:start}
+.no{font-family:var(--f-display);font-weight:800;font-size:20px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.3}
+.cat{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--jade);font-weight:700;margin-bottom:2px}
+.qt{margin:0}
+.ans{display:flex;gap:10px;align-items:flex-start}
+.letter{flex:none;width:28px;height:28px;border-radius:6px;background:var(--seal);color:var(--surface);display:grid;place-items:center;font-weight:700;font-size:14px}
+.letter.unk{background:var(--line);color:var(--muted)}
+.at{font-weight:700;margin:0;line-height:1.45}
+.han{font-family:var(--f-han);color:var(--muted);font-size:14px;margin:2px 0 0}
+.memo{font-size:13px;color:var(--muted);margin:6px 0 0}
+.memo.warn{color:var(--warn)}
+.st{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;text-align:center;white-space:nowrap;justify-self:end}
+.st.ok{background:var(--jade-soft);color:var(--jade)}
+.st.warn{background:var(--warn-soft);color:var(--warn)}
+.st.miss{background:var(--miss-soft);color:var(--seal)}
+.st.ext{background:transparent;color:var(--muted);border:1px dashed var(--line);font-weight:500}
+.row.flag{background:linear-gradient(90deg,var(--warn-soft),transparent 60%)}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin:8px 0 0;padding:8px 10px;border:1px dashed var(--line);border-radius:6px;font-size:13px}
+.four span{font-family:var(--f-han)}
+.empty{padding:32px;text-align:center;color:var(--muted)}
+footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:65ch}
+@media (max-width:640px){
+  .row{grid-template-columns:36px minmax(0,1fr);gap:8px 12px}
+  .row .ans{grid-column:2}
+  .row .st{grid-column:2;justify-self:start;grid-row:1;}
+  .row .qcol{grid-column:2}
+  .row .no{grid-row:1 / span 3}
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="seal" aria-hidden="true"><span>問</span><span>津</span><span>館</span><span>試</span></div>
+    <div>
+      <h1>문진관 입문 시험 족보</h1>
+      <p class="sub">연운(燕云十六声) 중국 본서버 문진관(问津馆) 시험. 기본 26문항을 다른 중국 공략 2곳과 대조했고, 거기에만 있는 문항 27개를 27번부터 덧붙였습니다.</p>
+    </div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+  <p class="note">시험은 문제은행에서 무작위로 출제되고, 같은 문제도 숫자나 보기가 바뀐 버전이 있어요. 산수는 숫자를 꼭 확인하세요. 글로벌 서버는 보기 순서와 번역도 달라질 수 있어요. 알파벳보다 <b>정답 내용(괄호 안 중문)</b>으로 맞춰 고르는 게 안전합니다.</p>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="문제·정답 검색 (예: 형병, 청주, 平仄)" aria-label="검색">
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer><a href="./" style="color:var(--jade)">← 목차로</a><br>대조한 공략: 蓝光手游网 〈文津馆入门笔试答案查询表〉(기본 26문항의 출처), 16yanyun 〈青州地图探索与文津馆考试答案大全〉(47문항), 川川云手机 〈文津馆考试答案分享〉(15문항), 17173 〈全网最全文津馆入门考试答案大全〉의 三六攻略组 이미지(41문항). 산수는 직접 계산했고, 경학·시문은 원전 내용을 알고 있는 범위에서 대조했습니다.<br><br>A~D 기호가 없는 문항은 출처 공략에 보기 기호가 적혀 있지 않은 문항이에요. 게임에서는 정답 내용을 보고 고르세요.</footer>
+</div>
+
+<script>
+const D=[
+[1, "문진관", "문진관 제자는 겨루거나 다툴 때 반드시 시 한 수를 읊어야 한다. 그 이유가 아닌 것은?", "C", "기습하기 편리하기 때문", "便于偷袭", "ok", "같은 상황에서 \"겨루기 전에 반드시 해야 하는 것\"을 묻는 버전도 있어요. 그때 답은 시 한 수 읊기(吟诗)."],
+[2, "산수", "시와 산문 합쳐 200편, 산문이 시보다 40편 많다면 각각 몇 편?", "C", "산문 120편, 시 80편", "文章一百二，诗词八十", "ok", "시 x편 → x + (x+40) = 200 → x = 80"],
+[3, "산수", "길이 20장, 너비 12장인 직사각형 사격장의 면적은?", "A", "240제곱장", "二百四十", "ok", "20 × 12 = 240"],
+[4, "산수", "200리 떨어진 두 군대가 하루 30리·20리씩 마주 오면 며칠 후 만나나?", "A", "4일", "四日", "ok", "200 ÷ (30+20) = 4. 하루 10리·15리로 나오는 버전도 있어 답이 8일이 되기도 해요. 숫자를 한 번 확인해 보세요."],
+[5, "산수", "밀가루 3승으로 호병 15개. 호병 120개에는 밀가루가 얼마나?", "B", "24승", "二十四升", "ok", "1승당 5개 → 120 ÷ 5 = 24"],
+[6, "산수", "500관·400관·300관 투자, 이익 240관을 비례 배분하면 세 번째 상인 몫은?", "D", "60관", "六十贯", "ok", "240 × 300/1200 = 60. 다른 공략엔 六百贯으로 적힌 버전도 있어요. 금액이 다르게 나오면 한 번 계산해 보세요."],
+[7, "경학", "《효경주소》에서 '소(疏)'를 쓴 사람은?", "B", "형병", "邢昺", "ok", "주(注)는 당 현종, 소(疏)는 북송 형병."],
+[8, "경학", "위나라 하안의 《논어집해》는 어떤 주석 형식인가?", "D", "집해체", "集解体", "ok", "한·위 여러 학자의 설을 모아 엮은 형식."],
+[9, "시문", "왕발 '落霞与孤鹜齐飞'에 이어지는 구절은?", "C", "가을 강물은 드넓은 하늘과 한빛을 이룬다", "秋水共长天一色", "ok", "《등왕각서》의 대구."],
+[10, "경학", "물·불·나무·쇠·흙 오행을 설명하는 구절이 나오는 경전은?", "B", "상서", "《尚书》", "ok", "《상서·홍범》 '一曰水，二曰火…'"],
+[11, "경학", "송나라 형병이 《이아》에 해설을 붙인 저작의 이름은?", "C", "이아의소", "《尔雅义疏》", "warn", "다른 공략(17173)은 《尔雅注疏》로 적었어요. 형병의 해설이 실린 책이 《이아주소》라서, 보기에 함께 있다면 한 번 비교해 보고 골라 보세요."],
+[12, "경학", "《예기·곡례》에서 자식이 차지하면 안 되는 '오(奥)'의 위치는?", "A", "방 안의 남서쪽 구석", "西南角", "ok", "'室中西南隅谓之奥' — 어른의 자리."],
+[13, "강호", "몽한약의 재료로 알려진 식물은?", "B", "만다라화", "曼陀罗", "ok", "흰독말풀. 마취 성분이 있음. \"마취제로 쓰인 약초\"를 묻는 버전도 답이 같아요."],
+[14, "지리", "'登东山而小鲁，登泰山而小天下'와 관련된 공자의 고향은?", "A", "곡부", "曲阜", "ok", "《맹자·진심 상》. 노나라 곡부."],
+[15, "경학", "유가 학파를 창시한 사람은?", "A", "공자", "孔子", "ok", ""],
+[16, "지리", "《상서·우공》 청주 설명의 '해대(海岱)'란?", "A", "발해와 태산", "渤海与泰山", "ok", "'海岱惟青州' — 바다(발해)에서 대(태산)까지."],
+[17, "산수", "48명을 조당 4~12명, 같은 인원으로 나누는 방법은 몇 가지?", "C", "4가지", "四种", "ok", "48의 약수 중 4~12: 4·6·8·12명"],
+[18, "시문", "교연 《시식》의 '시유사불(诗有四不)'에 해당하지 않는 것은?", "", "情多而不暗", "情多而不暗", "warn", "원문에서는 이 구절이 사불에 들어가 있어서 출제 오류일 수도 있어요. 원문의 사불은 아래 넷이니, 보기를 한 번 보고 골라 보세요.", ["气高而不怒", "力劲而不露", "情多而不暗", "才赡而不疏"]],
+[19, "수수께끼", "그리면 둥글고, 쓰면 네모, 겨울엔 짧고 여름엔 긴 것이 들어간 표현은?", "C", "일월영측 — 답은 日(해)", "日月盈昃", "ok", "《천자문》 구절. 해를 뜻함."],
+[20, "경학", "당 명경과에서 대경(大经)에 속하는 경전은?", "C", "예기", "《礼记》", "ok", "대경: 《예기》·《춘추좌전》. 중경: 시·주례·의례. 소경: 역·상서·공양·곡량."],
+[21, "강호", "'어느 줄의 밥을 먹느냐?'라는 물음의 뜻은?", "B", "어떤 생업에 종사하거나 어느 문파에 속하는가", "你从事哪个营生或门派", "ok", ""],
+[22, "강호", "강호 은어 '점자(点子)'가 가리키는 것은?", "D", "목표 인물", "目标人物", "ok", "'点子硬' = 상대가 만만치 않다."],
+[23, "성률", "영명체 규칙상 '평두'와 '상미'를 모두 피한 시구는?", "A", "매미 울음에 숲은 더욱 고요하고, 새소리에 산은 더욱 그윽하다", "蝉噪林逾静，鸟鸣山更幽", "warn", "17173은 余霞散成绮，澄江静如练으로 적었어요. 성률로 따져 보면 余霞 구는 1·6자와 2·7자가 모두 평성이라 평두에 걸리고, 蝉噪 구는 규칙에 맞아요. 보기를 한 번 보고 골라 보세요."],
+[24, "성률", "율시의 '대구상구(对句相救)' 대표 사례는?", "C", "들불에 타도 다하지 않고, 봄바람 불면 다시 돋아난다", "野火烧不尽，春风吹又生", "ok", "윗구 4번째 자 '不'(측)를 아랫구 3번째 자 '吹'(평)로 보완한 교과서 사례."],
+[25, "성률", "평측이 '仄仄平平仄'에 정확히 맞는 시구는?", "C", "흰 해가 산을 의지해 저물어 간다", "白日依山尽", "ok", "白·日 입성(측), 依·山 평, 尽 측. 보기가 바뀐 버전에선 '大漠孤烟直'이 정답이에요."],
+[26, "지리", "《주례·직방씨》에 기록된 청주의 진산(鎭山)은?", "B", "기산 / 이산", "沂山", "warn", "17173은 岱山으로 적었어요. 《주례》 원문에서 청주의 진산은 沂山이고 岱山은 연주의 진산이라, 보기를 한 번 보고 골라 보세요. 沂의 한자음은 '기'."],
+[27, "상식", "감군이 주장(主帥)의 적과 내통을 알았다. 어떻게 처리하나?", "B", "증거를 정리해 조정에 급히 밀보한다", "整理证据，急递密报朝廷", "ext", "\"하지 말아야 할 것(不当)\"을 묻는 버전도 있어요. 그때 답은 모른 척한다(假装不知). 출처: 16yanyun, 川川云"],
+[28, "성률", "오언율시 첫 구가 '平平仄仄平'이면 둘째 구는?", "A", "仄仄仄平平", "仄仄仄平平", "warn", "17173은 仄仄平平仄으로 적었어요. 율시 규칙상 둘째 구는 첫 구와 평측이 반대인 仄仄仄平平이고 仄仄平平仄은 셋째 구 형식이라, 보기를 한 번 보고 골라 보세요. 출처: 16yanyun, 川川云"],
+[29, "시문", "종영 《시품》에서 상품(上品)에 든 시인은?", "A", "사영운", "谢灵运", "ext", "도연명은 중품. 출처: 16yanyun"],
+[30, "강호", "강호의 '삼불문(三不问)'에 들지 않는 것은?", "D", "나이", "年龄", "ext", "원전 확인 어려움. 출처: 16yanyun"],
+[31, "상식", "도(道)가 행해지지 않을 때 부적절한 행동은?", "", "스스로 목숨을 끊는다", "自刎归天", "ext", "출처: 16yanyun"],
+[32, "경학", "《권학》의 출전은?", "", "《순자》", "《荀子》", "ext", "출처: 16yanyun"],
+[33, "시문", "'문장은 세 가지 쉬움을 따라야 한다(三易)'를 주장한 사람은?", "", "심약", "沈约", "ext", "보기 쉽고, 알기 쉽고, 읽기 쉬움. 출처: 16yanyun"],
+[34, "시문", "'건안지걸(建安之杰)'로 불린 사람은?", "", "조식", "曹植", "ext", "종영 《시품》의 평. 출처: 16yanyun"],
+[35, "시문", "'문장은 시대를 위해 지어야 한다'를 주장한 사람은?", "", "백거이", "白居易", "ext", "'文章合为时而著'. 출처: 16yanyun"],
+[36, "시문", "'忽如一夜春风来'가 묘사하는 계절은?", "", "겨울 눈 풍경", "冬雪", "ext", "잠삼 《백설가》. 배꽃은 눈을 비유. 출처: 16yanyun"],
+[37, "시문", "'시불(诗佛)'로 불린 시인은?", "", "왕유", "王维", "ext", "출처: 16yanyun"],
+[38, "시문", "'시귀(诗鬼)'로 불린 시인은?", "", "이하", "李贺", "ext", "출처: 16yanyun"],
+[39, "시문", "육유 《시음(市饮)》의 구절은?", "", "海日浴鲸波", "海日浴鲸波", "ext", "원문 확인 어려움. 출처: 16yanyun"],
+[40, "상식", "장로 세 분을 모시는데 따뜻한 물이 두 병뿐이다. 어떻게 하나?", "A", "나는 마시지 않고 가장 연장자 두 분께 드린다", "自己不喝，给两位最年长的长老", "ext", "출처: 16yanyun, ccynice"],
+[41, "상식", "장서각을 지키는 방법으로 부적절한 것은?", "", "항복하느니 책을 모두 불태운다", "尽焚书籍", "ext", "출처: 16yanyun"],
+[42, "상식", "군주가 어리석을 때 부적절한 행동은?", "", "즉시 적에게 투항한다", "立刻投敌", "ext", "출처: 16yanyun"],
+[43, "상식", "옛 주군의 나라가 망한 뒤 부적절한 행동은?", "", "양쪽 사이에서 기회를 엿본다", "首鼠两端", "ext", "출처: 16yanyun"],
+[44, "경학", "공자 '其身不正'에 이어지는 구절은?", "", "虽令不从", "虽令不从", "ext", "《논어·자로》. 출처: 16yanyun"],
+[45, "경학", "사서(四书)에 들지 않는 것은?", "", "《춘추》", "《春秋》", "ext", "사서: 논어·맹자·대학·중용. 출처: 16yanyun"],
+[46, "경학", "상고의 문헌을 기록한 경전은?", "", "《상서》", "《尚书》", "ext", "출처: 16yanyun"],
+[47, "역사", "오대 국자감본 구경(九经) 목판 간행을 주관한 사람은?", "", "풍도", "冯道", "ext", "출처: 16yanyun"],
+[48, "시문", "전원시파의 창시자는?", "", "도연명", "陶渊明", "ext", "출처: 16yanyun"],
+[49, "경학", "'北冥有鱼'의 출전은?", "D", "《장자》", "《庄子》", "ext", "《장자·소요유》. 출처: ccynice"],
+[50, "성률", "당 율시의 '점대(粘对)' 법칙을 처음 논한 책은?", "", "원긍 《시수뇌》", "元兢《诗髓脑》", "ext", "출처: 17173(三六攻略组)"],
+[51, "성률", "심약 '팔병' 중 '학슬(鹤膝)'은 오언시에서 무엇을 가리키나?", "", "5번째 자와 15번째 자가 같은 성조", "第五字与第十五字同声调", "ext", "출처: 17173(三六攻略组)"],
+[52, "시문", "《영아(咏鹅)》를 지은 시인은?", "", "낙빈왕", "骆宾王", "ext", "출처: 17173(三六攻略组)"],
+[53, "상식", "천하의 흥망을 짊어졌는데 옛 사문에게 배신자로 오해받았다. 하지 말아야 할 것은?", "", "여러 세력을 끌어들여 사문을 쳐서 분풀이한다", "援引多方势力剿灭师门泄愤", "ext", "출처: 17173(三六攻略组)"]
+];
+const ST={ok:"확인",warn:"주의",miss:"누락",ext:"타 공략"};
+const cats=["전체",...new Set(D.map(d=>d[1]))];
+let cur="전체";
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function stats(){
+  const c={ok:0,warn:0,miss:0,ext:0};D.forEach(d=>c[d[6]]++);
+  $("#stats").innerHTML=`<span class="stat"><b>26</b>기본 문항</span><span class="stat"><b>${c.ext}</b>타 공략 추가 문항</span><span class="stat" style="color:var(--jade)"><b>${c.ok}</b>정답 확인</span><span class="stat" style="color:var(--warn)"><b>${c.warn}</b>표기 주의</span><span class="stat" style="color:var(--seal)"><b>${c.miss}</b>정답 누락</span>`;
+}
+function chips(){
+  $("#chips").innerHTML=cats.map(c=>`<button class="chip" type="button" aria-pressed="${c===cur}" data-c="${c}">${c}</button>`).join("");
+}
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  const rows=D.filter(d=>(cur==="전체"||d[1]===cur)&&(!q||d.slice(1,8).join(" ").toLowerCase().includes(q)));
+  $("#list").innerHTML=rows.length?rows.map(d=>`
+  <div class="row${d[6]==="warn"||d[6]==="miss"?" flag":""}">
+    <div class="no">${String(d[0]).padStart(2,"0")}</div>
+    <div class="qcol"><span class="cat">${d[1]}</span><p class="qt">${esc(d[2])}</p></div>
+    <div class="ans">${d[3]?`<span class="letter${d[3]==="?"?" unk":""}">${d[3]}</span>`:""}
+      <div style="min-width:0"><p class="at">${esc(d[4])}</p><p class="han">${d[5]}</p>
+      ${d[7]?`<p class="memo${d[6]==="warn"||d[6]==="miss"?" warn":""}">${d[7]}</p>`:""}
+      ${d[8]?`<div class="four">${d[8].map(x=>`<span>${x}</span>`).join("")}</div>`:""}</div></div>
+    <span class="st ${d[6]}">${ST[d[6]]}</span>
+  </div>`).join(""):`<div class="empty">맞는 문항이 없어요. 검색어를 바꿔 보세요.</div>`;
+}
+$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;cur=b.dataset.c;chips();render();});
+$("#q").addEventListener("input",render);
+stats();chips();render();
+</script>
+
+</body>
+</html>
